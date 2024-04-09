@@ -14,16 +14,13 @@ app.use(express.json());
 
 
 app.get('/musicians', async (req, res, next) => {
-    // Parse the query params, set default values, and create appropriate 
+    // Parse the query params, set default values, and create appropriate
     // offset and limit values if necessary.
-    // Your code here 
-    
-    // Query for all musicians
-    // Include attributes for `id`, `firstName`, and `lastName`
-    // Include associated bands and their `id` and `name`
-    // Order by musician `lastName` then `firstName`
-    const musicians = await Musician.findAll({ 
-        order: [['lastName'], ['firstName']], 
+    // Your code here
+    const {limit, offset} = getPag(req.query)
+
+    const musicians = await Musician.findAll({
+        order: [['lastName'], ['firstName']],
         attributes: ['id', 'firstName', 'lastName'],
         include: [{
             model: Band,
@@ -31,7 +28,9 @@ app.get('/musicians', async (req, res, next) => {
         }],
         // add limit key-value to query
         // add offset key-value to query
-        // Your code here 
+        // Your code here
+        limit,
+        offset
     });
 
     res.json(musicians)
@@ -40,16 +39,16 @@ app.get('/musicians', async (req, res, next) => {
 
 // BONUS: Pagination with bands
 app.get('/bands', async (req, res, next) => {
-    // Parse the query params, set default values, and create appropriate 
+    // Parse the query params, set default values, and create appropriate
     // offset and limit values if necessary.
-    // Your code here 
-    
+    // Your code here
+    const {limit, offset} = getPag(req.query)
     // Query for all bands
     // Include attributes for `id` and `name`
     // Include associated musicians and their `id`, `firstName`, and `lastName`
     // Order by band `name` then musician `lastName`
-    const bands = await Band.findAll({ 
-        order: [['name'], [Musician, 'lastName']], 
+    const bands = await Band.findAll({
+        order: [['name'], [Musician, 'lastName']],
         attributes: ['id', 'name'],
         include: [{
             model: Musician,
@@ -57,7 +56,9 @@ app.get('/bands', async (req, res, next) => {
         }],
         // add limit key-value to query
         // add offset key-value to query
-        // Your code here 
+        // Your code here
+        limit,
+        offset
     });
 
     res.json(bands)
@@ -66,18 +67,18 @@ app.get('/bands', async (req, res, next) => {
 
 // BONUS: Pagination with instruments
 app.get('/instruments', async (req, res, next) => {
-    // Parse the query params, set default values, and create appropriate 
+    // Parse the query params, set default values, and create appropriate
     // offset and limit values if necessary.
     // Your code here
-    
+    const {limit, offset} = getPag(req.query)
     // Query for all instruments
     // Include attributes for `id` and `type`
     // Include associated musicians and their `id`, `firstName` and `lastName`
     // Omit the MusicianInstruments join table attributes from the results
     // Include each musician's associated band and their `id` and `name`
     // Order by instrument `type`, then band `name`, then musician `lastName`
-    const instruments = await Instrument.findAll({ 
-        order: [['type'], [Musician, Band, 'name'], [Musician, 'lastName']], 
+    const instruments = await Instrument.findAll({
+        order: [['type'], [Musician, Band, 'name'], [Musician, 'lastName']],
         attributes: ['id', 'type'],
         include: [{
             model: Musician,
@@ -91,15 +92,26 @@ app.get('/instruments', async (req, res, next) => {
         }],
         // add limit key-value to query
         // add offset key-value to query
-        // Your code here 
+        // Your code here
+        limit,
+        offset
     });
 
     res.json(instruments)
 });
 
 // ADVANCED BONUS: Reduce Pagination Repetition
-// Your code here 
+// Your code here
 
+    const getPag = ({page, size}) => {
+        const newSize = parseInt(size) || 5
+        const newPage = parseInt(page) || 1
+
+        let limit = newSize
+        let offset = newSize * (newPage - 1)
+
+        return {limit, offset}
+    }
 
 // Root route - DO NOT MODIFY
 app.get('/', (req, res) => {
