@@ -177,3 +177,4 @@ your queries in **Sequelize**.
 [band-musician-instrument-db-diagram-info]: https://appacademy-open-assets.s3.us-west-1.amazonaws.com/Modular-Curriculum/content/week-11/practices/band-musician-instrument-db-diagram-info.txt
 [pagination docs]: https://sequelize.org/docs/v6/core-concepts/model-querying-basics/#limits-and-pagination
 # aa11-pagination
+# aa11-pagination
